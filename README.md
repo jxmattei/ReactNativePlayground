@@ -5,7 +5,7 @@ A sample react native project with a simple guide through its features and compo
   * [Installing React Native](#installing-react-native)
   * [Creating your project](#creating-your-project)
   * [Running your project](#running-your-project)
-* [Project Structure](#project-Structure)
+* [Project Structure](#project-structure)
   
 
 ## Project Setup
