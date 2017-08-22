@@ -1,5 +1,5 @@
 # react-native-playground-project
-A sample react native project with a simple guide through its features and components. 
+A sample react native project with a simple guide through its features and components. Feel free to fork, contribute, or address any naming convention issue. 
 
 * [Project Setup](#project-setup)
   * [Installing React Native](#installing-react-native)
