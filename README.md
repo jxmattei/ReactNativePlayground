@@ -5,6 +5,7 @@ A sample react native project with a simple guide through its features and compo
   * [Installing React Native](#installing-react-native)
   * [Creating your project](#creating-your-project)
   * [Running your project](#running-your-project)
+* [Project Structure](#project-Structure)
   
 
 ## Project Setup
@@ -47,7 +48,7 @@ Android (Requires Android build tools)
 npm run android
 ```
 
-### Project structure
+## Project Structure
 
 For project struture. I rely on using a structure similar to what Konstantin Shkut uses in his [page](http://rationalappdev.com/cross-platform-navigation-in-react-native/#outlining-the-structure) as follows
 
