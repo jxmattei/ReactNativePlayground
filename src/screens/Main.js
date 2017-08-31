@@ -1,85 +1,97 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, ScrollView, ListView, TouchableHighlight, Modal } from 'react-native';
-// import ShowModalSample from './ShowModalSample.js'
+import {StyleSheet, Text, View, ListView} from 'react-native';
+import {TableCell} from '../components/TableCell.js';
+import {ShowModalSample} from '../screens/modal/ShowModalSample.js';
 
 export default class Main extends Component {
 
-  state = {
-    modalVisible : false,
-  }
+  static navigationOptions = {
+    title: 'React Native Playground',
+  };
 
   constructor() {
     super();
-
-    this.setState({modalVisible: false});
-
+    /* load data source for list view */
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       dataSource: ds.cloneWithRows(menuData),
+      activeModal:'',
     };
   }
 
-  setModalVisible(visible) {
-    console.log('here');
-    this.setState({modalVisible: visible});
-  }
-
-
-  navigateToPage(pageName){
-
-  }
-
   render() {
-    console.log(this.state);
     return (
       <View style={styles.container}>
-        <View style={styles.mainMenuHeader}>
-            <Text style={styles.mainMenuHeaderTitle}>React Native Playground</Text>
-        </View>
-        <ListView
-          dataSource={this.state.dataSource}
+        {/*
+          This list view takes the menuData data source and displays it as a cell
+        */}
+        <ListView dataSource={this.state.dataSource}
           renderRow={(rowData) =>
-            <TouchableHighlight onPress={() => {
-              this.setModalVisible(true);
-            }}>
-              <View style={styles.mainMenuCell}>
-                <Text>{rowData.title}</Text>
-              </View>
-            </TouchableHighlight>
-          }/>
-        <Modal
-          animationType={"slide"}
-          transparent={false}
-          visible={false}
-          onRequestClose={() => {alert("Modal has been closed.")}}
-          >
-         <View>
-          <View>
-            <Text>Hello World!</Text>
-
-            <TouchableHighlight onPress={() => {
-              this.setModalVisible(!this.state.modalVisible)
-            }}>
-              <Text>Hide Modal</Text>
-            </TouchableHighlight>
-
-          </View>
-         </View>
-        </Modal>
+            /*
+            TableCell is a Component created as a layout for cell
+            Located at ./src/components/TableCell.js
+            */
+            <TableCell title={rowData.title} onPress={() => {
+              /* rowData is a row from menuData. */
+              this.navigateToScreen(rowData);
+            }}/>
+        }/>
+        {/* Render modal page when selected  */}
+        {this.renderModal()}
       </View>
     );
   }
+
+  /*
+  renderModal will populate the selected modal page when populated.
+  Otherwise, it will return null when rendered.
+  */
+  renderModal() {
+    switch (this.state.activeModal) {
+      case 'ShowModalSample':
+        /* Adding the ref prop will give access to state vatiables in component */
+        return (
+          <ShowModalSample ref="modalPage" />
+        );
+        break;
+      default:
+        return null;
+    }
+  }
+
+  navigateToScreen(screen) {
+    /* Obtain navigation object passed when instance was created at App.js */
+    let { navigate } = this.props.navigation;
+    switch (screen.type) {
+      /* If modal, */
+      case 'modal':
+        this.setState({activeModal: screen.screenName});
+        /* if screen type is modal and modal page exists in ref */
+        if(screen.type == 'modal' && this.refs.modalPage != null){
+          /* ref modalPage was created at renderModal function */
+          /* set modalVisible state to true and show modal */
+          this.refs.modalPage.setState({modalVisible : true});
+        }
+        break;
+      case 'navigation':
+        /* use navigate from navigation prop to screen mapped at App.js */
+        navigate(screen.screenName);
+        break;
+    }
+  }
+
 }
 
+/* Data to populate main menu */
 const menuData = [{
   title: 'Modal Example',
-  pageNavigation: 'PageNav',
-},
-// {
-//   title: 'Navigation',
-//   pageNavigation: 'PageNav',
-// }
-];
+  screenName: 'ShowModalSample',
+  type:'modal',
+},{
+  title: 'Navigation Example',
+  screenName: 'NavigationSample',
+  type:'navigation',
+}];
 
 const styles = StyleSheet.create({
   container: {
@@ -99,11 +111,4 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     fontWeight: '500',
   },
-  mainMenuCell: {
-    height:40,
-    justifyContent:'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    paddingLeft: 10,
-  }
 });
